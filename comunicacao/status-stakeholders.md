@@ -1,179 +1,96 @@
-# Status do Projeto para Stakeholders
+# Status Report do Projeto
 
-Documento de comunicacao objetiva sobre a situacao atual do projeto, principais riscos revisados, acoes recomendadas e decisoes necessarias para apoiar a continuidade do trabalho.
+Comunicacao objetiva para acompanhamento do projeto e apoio a decisoes dos stakeholders.
 
 **Timestamp de geracao:** 2026-07-12 20:08:51 -03:00
 
-**Ultima atualizacao:** 2026-07-12 21:39:48 -03:00
+**Ultima atualizacao:** 2026-07-12 21:44:44 -03:00
 
-## Contexto Atual do Projeto
+## Resumo Executivo
 
-O projeto esta em fase intermediaria de desenvolvimento. Parte das funcionalidades ja foi implementada e outras seguem em andamento, incluindo cadastro de usuarios, agenda medica, agendamento de consultas, notificacoes e integracao com um sistema externo de prontuario.
+O projeto segue em fase intermediaria de desenvolvimento, com funcionalidades ja implementadas e outras ainda em andamento. A entrega principal continua viavel, mas depende de decisoes de gestao sobre escopo, prazo, integracao externa e nivel de risco aceitavel.
 
-Neste momento, a situacao exige decisoes de gestao para manter a entrega viavel e preservar a qualidade. Os pontos mais relevantes sao:
+Os principais fatores que pressionam o projeto neste momento sao:
 
-- A integracao com o prontuario externo e critica para a entrega e ja apresentou instabilidade.
-- Novas regras foram solicitadas para o fluxo de agendamento, mas precisam ser avaliadas sem comprometer o funcionamento principal do sistema.
-- A equipe relatou aumento de carga de trabalho e dificuldade para cumprir os prazos inicialmente estimados.
-- A capacidade de testes e limitada, pois ha 1 tester para validar funcionalidades, mudancas, integracao e regressao.
-- Foram identificados riscos adicionais relacionados a dados sensiveis, controle de acesso, concorrencia em agendamentos, indisponibilidade da API externa e estresse da equipe.
+- instabilidade e dependencia critica do sistema externo de prontuario;
+- novas solicitacoes no fluxo de agendamento;
+- sobrecarga da equipe e capacidade limitada de testes;
+- necessidade de proteger qualidade, dados sensiveis e confiabilidade do agendamento.
 
-Ja esta em andamento:
+## Status Geral
 
-- Identificacao e revisao dos riscos do projeto.
-- Analise qualitativa de probabilidade e impacto.
-- Definicao de estrategias possiveis de resposta aos riscos.
-- Recalibragem do impacto das notificacoes, considerado menor quando comparado aos riscos de integracao, dados, agenda, seguranca e capacidade da equipe.
+| Area | Situacao atual | Atencao requerida |
+| --- | --- | --- |
+| Desenvolvimento | Parcialmente implementado, com funcionalidades ainda em progresso. | Manter foco no escopo principal. |
+| Integracao externa | Critica para a entrega e com instabilidade relatada. | Acionar responsaveis externos via SLA/contrato e definir contingencia. |
+| Escopo | Novas regras de agendamento foram solicitadas. | Avaliar o que entra agora e o que deve ir para versao futura. |
+| Equipe | 4 desenvolvedores e 1 tester, com sobrecarga relatada. | Reavaliar prazo e capacidade real de validacao. |
+| Qualidade | Ha risco de regressao, falhas de agenda e lacunas de teste. | Priorizar testes criticos e automacao quando viavel. |
 
-## Principais Pontos de Atencao
+## Principais Riscos para Decisao
 
-### 1. Integracao com o prontuario externo
+### Integracao com o prontuario externo
 
-A integracao continua sendo o principal ponto de dependencia externa. A instabilidade, a falta de documentacao clara, possiveis indisponibilidades da API e desalinhamentos de regras podem afetar diretamente a entrega.
+A integracao e essencial para a entrega e nao esta totalmente sob controle da equipe do projeto. A falta de documentacao clara, mudancas recentes e possivel indisponibilidade da API podem gerar atrasos e retrabalho.
 
-**Impacto possivel:** atraso, bloqueio de funcionalidades dependentes, retrabalho, falhas em homologacao e necessidade de alinhamento com o responsavel pelo sistema externo.
+**Decisao esperada:** confirmar acionamento formal do responsavel pelo sistema externo, com cobranca de documentacao, cronograma de manutencao, regras da API, suporte e SLA.
 
-**Direcao recomendada:** transferir parte desse risco por meio de SLA, contrato ou acordo formal, exigindo melhor documentacao, cronograma de manutencao, comunicacao previa de mudancas, canal de suporte e regras claras da API.
+### Mudancas no fluxo de agendamento
 
-Tambem e recomendavel reduzir o impacto para o usuario final com mecanismos de resiliencia, como limite de tempo de resposta, interrupcao temporaria de chamadas para um servico instavel, novas tentativas controladas, fila de reprocessamento, cache controlado e mensagens claras quando o prontuario nao estiver disponivel.
+As novas regras podem agregar valor, mas tambem podem desviar a equipe do objetivo principal da entrega.
 
-### 2. Mudancas no fluxo de agendamento e controle de escopo
+**Decisao esperada:** definir quais mudancas sao obrigatorias para a entrega atual e quais devem ser planejadas para uma versao futura.
 
-As novas validacoes e regras solicitadas podem ser importantes, mas introduzi-las agora pode gerar retrabalho e pressionar ainda mais a equipe. O risco de crescimento nao controlado de escopo deve ser tratado de forma explicita.
+### Prazo e capacidade da equipe
 
-**Impacto possivel:** atraso, perda de foco na entrega principal, aumento de testes, retrabalho e dificuldade de previsibilidade.
+A equipe ja relatou aumento de carga de trabalho. Manter o prazo original sem ajuste pode elevar risco de defeitos, retrabalho e queda de qualidade.
 
-**Direcao recomendada:** evitar momentaneamente o novo escopo que nao seja essencial para o funcionamento principal do sistema. As novas demandas devem ser avaliadas e, quando possivel, planejadas para uma versao futura.
+**Decisao esperada:** avaliar renegociacao da data final ou reducao de escopo nao essencial.
 
-### 3. Sobrecarga da equipe e qualidade final
+### Testes e qualidade
 
-A equipe e composta por 4 desenvolvedores e 1 tester. Como ja houve relato de aumento de carga de trabalho e dificuldade com os prazos, existe risco de estresse da equipe e reducao da qualidade final.
+Com apenas 1 tester, nao e realista assumir cobertura ampla sem impacto em prazo. O gargalo de testes deve ser tratado como risco conhecido.
 
-**Impacto possivel:** mais defeitos, retrabalho, queda de produtividade, reducao de foco e menor previsibilidade da entrega.
+**Decisao esperada:** aprovar cobertura minima de testes, aceitar lacunas residuais ou definir reforco de capacidade.
 
-**Direcao recomendada:** negociar uma nova data final, priorizar o escopo essencial, limitar novas demandas e reservar tempo realista para testes, correcao e estabilizacao.
+### Seguranca e confiabilidade
 
-### 4. Capacidade de testes
+O sistema pode lidar com dados pessoais e dados relacionados a saude. Tambem ha riscos de acesso indevido, inconsistencias com o prontuario e conflitos de agenda.
 
-O gargalo de testes e um risco relevante. Como ha apenas 1 tester, a cobertura completa pode nao ser possivel dentro do prazo original.
+**Decisao esperada:** validar controles minimos de acesso, rastreabilidade, protecao de dados e prevencao de duplicidade de agendamentos.
 
-**Impacto possivel:** validacao mais lenta, menor cobertura de regressao e maior chance de defeitos residuais.
+## Acoes Recomendadas
 
-**Direcao recomendada:** aceitar formalmente esse risco residual, pois a capacidade de testes deveria ter sido considerada desde o inicio do projeto. Ainda assim, recomenda-se priorizar testes dos fluxos mais criticos e mitigar regressao com testes automatizados sempre que viavel.
+1. Acionar o responsavel pelo prontuario externo com base em SLA, contrato ou acordo formal.
+2. Separar escopo essencial da entrega atual de novas solicitacoes que podem ficar para versao futura.
+3. Replanejar a data final considerando capacidade da equipe, integracao externa e tempo de testes.
+4. Priorizar testes dos fluxos criticos: agendamento, integracao, acesso a dados e regressao.
+5. Aplicar mecanismos de resiliencia na integracao, como limite de tempo de resposta, novas tentativas controladas, modo degradado e fila de reprocessamento, se forem aceitos pelo negocio.
+6. Melhorar a experiencia do usuario em falhas externas com mensagens claras e status de sincronizacao.
 
-### 5. Qualidade, seguranca e confiabilidade dos dados
-
-O sistema pode lidar com dados pessoais e dados relacionados a saude. Tambem ha risco de inconsistencias entre o sistema e o prontuario externo, acesso indevido por perfis mal definidos e falta de rastreabilidade para diagnosticar falhas.
-
-**Impacto possivel:** exposicao indevida de dados, dificuldade de suporte, perda de confianca, retrabalho e problemas no aceite da entrega.
-
-**Direcao recomendada:** validar controles de acesso, protecao de dados sensiveis, logs sem exposicao indevida, rastreabilidade de operacoes e mecanismos de reconciliacao com o prontuario.
-
-A experiencia do usuario tambem depende de transparencia nesses cenarios. Quando uma acao depender do prontuario externo, o sistema deve indicar se a operacao foi confirmada, esta pendente de sincronizacao, falhou ou precisa de nova tentativa.
-
-### 6. Concorrencia em agendamentos
-
-Como o sistema possui agenda medica e agendamento de consultas, pode haver risco de dois usuarios ou processos tentarem reservar ou alterar o mesmo horario ao mesmo tempo.
-
-**Impacto possivel:** duplicidade de agendamentos, conflito de horarios, perda de atualizacao e retrabalho operacional.
-
-**Direcao recomendada:** mitigar com validacao final de disponibilidade, regras de bloqueio, controle transacional ou outro mecanismo tecnico equivalente, conforme arquitetura do sistema.
-
-### 7. Notificacoes
-
-As notificacoes podem ser afetadas pelas mudancas no agendamento, mas o impacto foi considerado menor em comparacao aos demais riscos.
-
-**Impacto possivel:** mensagens incorretas, ausentes ou disparadas no momento errado.
-
-**Direcao recomendada:** tratar de forma proporcional. Validar notificacoes essenciais, mas sem deslocar foco dos riscos mais criticos.
-
-## Acoes em Andamento ou Recomendadas
-
-1. **Acionar o responsavel pelo prontuario externo com base em SLA ou contrato.**
-   Solicitar documentacao atualizada da API, cronograma de manutencao, regras de negocio, cenarios de erro e canal formal de suporte.
-
-2. **Separar escopo principal de novas solicitacoes.**
-   Identificar o que e indispensavel para a entrega atual e o que pode ser planejado para uma versao futura.
-
-3. **Negociar uma nova data final.**
-   Replanejar considerando a integracao externa, mudancas de escopo, capacidade da equipe, capacidade de testes e tempo de estabilizacao.
-
-4. **Aceitar formalmente o gargalo de testes ou decidir por reforco de capacidade.**
-   Caso nao haja reforco, registrar quais cenarios serao priorizados e quais riscos residuais serao aceitos.
-
-5. **Mitigar regressao com testes automatizados.**
-   Priorizar automacao para fluxos criticos ja implementados, especialmente agendamento, integracao, controle de acesso e regras principais.
-
-6. **Validar seguranca e acesso a dados sensiveis.**
-   Confirmar perfis, permissoes, dados expostos em telas, logs, notificacoes e trafego com o sistema externo.
-
-7. **Definir tratamento para indisponibilidade e falhas de integracao.**
-   Avaliar mensagens controladas, reprocessamento, reconciliacao, logs, criterios de aceite para falhas externas e tecnicas como circuit breaker, timeout, retry com intervalo progressivo, cache controlado e modo degradado.
-
-8. **Validar concorrencia no agendamento.**
-   Confirmar como o sistema evita duplicidade ou conflito em reservas simultaneas.
-
-9. **Melhorar a experiencia do usuario em falhas ou pendencias.**
-   Definir mensagens simples, status de sincronizacao, orientacoes de proxima acao e comportamento esperado quando o prontuario externo nao responder.
-
-## Melhorias Recomendadas para Experiencia do Usuario
-
-As melhorias abaixo ajudam a reduzir impacto percebido pelo usuario quando houver instabilidade, indisponibilidade ou rejeicao de regras pelo sistema externo:
-
-- **Mensagens claras em falhas:** informar que o servico de prontuario esta temporariamente indisponivel, sem expor detalhes tecnicos.
-- **Status de sincronizacao:** indicar quando um agendamento esta confirmado, pendente de sincronizacao, falhou ou exige nova tentativa.
-- **Modo degradado:** permitir que partes do sistema continuem funcionando quando a integracao externa estiver indisponivel, desde que isso seja aceito pelo negocio.
-- **Evitar espera indefinida:** definir limite de tempo para respostas da integracao, retornando uma mensagem controlada ao usuario.
-- **Nova tentativa controlada:** repetir automaticamente algumas operacoes quando a falha parecer temporaria, sem duplicar agendamentos.
-- **Fila de reprocessamento:** registrar operacoes que podem ser sincronizadas depois, quando permitido pelas regras do projeto.
-- **Prevencao de duplicidade:** usar mecanismos que evitem repetir o mesmo agendamento quando o usuario tentar novamente apos uma falha.
-- **Validacao antecipada:** quando regras do prontuario forem conhecidas, validar antes de enviar a operacao para reduzir recusas tardias.
-- **Orientacao de proxima acao:** informar se o usuario deve aguardar, tentar novamente, revisar dados ou contatar suporte.
-
-## Proximos Passos para Decisao
-
-Os stakeholders precisam validar ou decidir os seguintes pontos:
-
-1. **Escopo da entrega atual.**
-   Confirmar quais funcionalidades devem permanecer na entrega principal e quais novas solicitacoes devem ir para backlog futuro.
-
-2. **Nova data final ou aceite de risco de prazo.**
-   Decidir se o prazo sera renegociado para refletir a realidade atual de escopo, integracao e capacidade da equipe.
-
-3. **Acionamento formal do responsavel pelo sistema externo.**
-   Confirmar quem fara a comunicacao e quais pontos serao cobrados via SLA, contrato ou acordo: documentacao, manutencao, suporte, disponibilidade e regras da API.
-
-4. **Criterios de aceite da integracao.**
-   Definir o que sera considerado aceitavel quando a API externa estiver instavel, indisponivel ou retornando regras divergentes.
-
-5. **Comportamento esperado para falhas externas.**
-   Decidir quais tecnicas serao adotadas: circuit breaker, timeout, retry controlado, cache, fila de reprocessamento, modo degradado e mensagens ao usuario.
-
-6. **Criterios de aceite das regras de agendamento.**
-   Aprovar regras, exemplos e excecoes antes de implementar mudancas adicionais.
-
-7. **Nivel minimo de testes.**
-   Confirmar a cobertura minima obrigatoria e aceitar formalmente as lacunas que nao puderem ser cobertas com a capacidade atual.
-
-8. **Nivel minimo de seguranca e rastreabilidade.**
-   Validar controles de acesso, tratamento de dados sensiveis, logs, auditoria e reconciliacao antes da entrega.
-
-## Pontos que Exigem Validacao
+## Pontos Pendentes de Validacao
 
 - Quais funcionalidades dependem obrigatoriamente do prontuario externo.
-- Se existe SLA, contrato ou acordo formal aplicavel ao sistema externo.
-- Quais manutencoes, mudancas e indisponibilidades da API externa estao previstas.
-- Quais novas regras de agendamento sao essenciais para a entrega atual.
-- Se o prazo atual ainda e realista considerando escopo, equipe, testes e integracao.
-- Se existem controles suficientes para dados sensiveis e perfis de usuario.
-- Se ha mecanismos de controle de concorrencia para evitar conflitos de agenda.
-- Se existem logs e rastreabilidade suficientes sem expor dados sensiveis.
-- Se o negocio aceita modo degradado, cache temporario ou fila de reprocessamento em falhas da API externa.
-- Quais mensagens e status devem ser exibidos ao usuario em indisponibilidade, sincronizacao pendente ou rejeicao de regra.
-- Quais lacunas de teste serao aceitas pelos stakeholders.
+- Se ha SLA ou contrato aplicavel ao sistema externo.
+- Quais novas regras de agendamento sao indispensaveis agora.
+- Se a data atual ainda e viavel com a capacidade disponivel.
+- Qual cobertura minima de testes sera aceita.
+- Quais controles de seguranca, acesso e rastreabilidade sao obrigatorios para a entrega.
+- Se o negocio aceita modo degradado, operacoes pendentes ou reprocessamento quando a API externa falhar.
+
+## Proximos Passos
+
+| Prioridade | Proximo passo | Responsavel sugerido |
+| --- | --- | --- |
+| Alta | Confirmar escopo da entrega atual. | Stakeholders / Produto |
+| Alta | Acionar responsavel pelo prontuario externo. | Gestao do projeto / Area responsavel pela integracao |
+| Alta | Revisar prazo com base na capacidade real da equipe. | Gestao do projeto |
+| Media | Definir cobertura minima de testes e riscos aceitos. | Gestao do projeto / QA / Stakeholders |
+| Media | Validar requisitos minimos de seguranca e acesso. | Equipe tecnica / Stakeholders |
+| Media | Definir comportamento do sistema em falhas da API externa. | Equipe tecnica / Produto |
 
 ## Mensagem Final
 
-O projeto continua viavel, mas a situacao atual exige decisao clara sobre escopo, prazo, integracao externa, testes e qualidade. O maior risco nao esta em um unico ponto isolado, mas na combinacao entre dependencia externa critica, novas mudancas de escopo, capacidade limitada de validacao e sobrecarga da equipe.
+O projeto nao esta bloqueado, mas a entrega depende de alinhamento rapido sobre escopo, prazo e integracao externa. A recomendacao e proteger o funcionamento principal do sistema, evitar ampliacao de escopo neste momento e formalizar responsabilidades com o sistema externo.
 
-A recomendacao e proteger a entrega principal, formalizar responsabilidades do sistema externo, renegociar prazo quando necessario e aceitar conscientemente os riscos residuais. Alem disso, mecanismos de resiliencia e mensagens claras podem reduzir o impacto percebido pelo usuario quando houver falhas externas. Essa abordagem ajuda a manter a qualidade, reduzir retrabalho e apoiar decisoes mais realistas e transparentes.
+Com essas decisoes, a equipe tera melhores condicoes de manter qualidade, reduzir retrabalho e entregar uma versao mais previsivel.
