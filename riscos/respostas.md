@@ -4,7 +4,7 @@ Documento gerado para sugerir possiveis estrategias de resposta aos riscos previ
 
 **Timestamp de geracao:** 2026-07-12 19:40:19 -03:00
 
-**Ultima atualizacao:** 2026-07-12 21:26:03 -03:00
+**Ultima atualizacao:** 2026-07-12 21:39:48 -03:00
 
 ## Premissas e Limites da Analise
 
@@ -17,8 +17,8 @@ Documento gerado para sugerir possiveis estrategias de resposta aos riscos previ
 
 | ID | Risco | Estrategia primaria proposta para avaliacao | Alternativas viaveis | Implicacoes principais |
 | --- | --- | --- | --- | --- |
-| R-01 | Instabilidade na integracao com o prontuario externo | Transferir | Mitigar tecnicamente; aceitar risco residual documentado | Exige acionar SLA/contrato, cobrar melhoria de documentacao, cronograma de manutencao e alinhamento de regras. |
-| R-02 | Dependencia critica de sistema externo para a entrega | Transferir e mitigar | Aceitar com contingencia aprovada; evitar escopo dependente se necessario | Exige acordo formal com responsaveis externos e plano de continuidade para fluxos criticos. |
+| R-01 | Instabilidade na integracao com o prontuario externo | Transferir | Mitigar tecnicamente com resiliencia; aceitar risco residual documentado | Exige acionar SLA/contrato, cobrar melhoria de documentacao, cronograma de manutencao, alinhamento de regras e implementar protecoes como circuit breaker, timeout e retry controlado. |
+| R-02 | Dependencia critica de sistema externo para a entrega | Transferir e mitigar | Aceitar com contingencia aprovada; evitar escopo dependente se necessario | Exige acordo formal com responsaveis externos, plano de continuidade, modo degradado e comunicacao clara ao usuario quando a integracao nao estiver disponivel. |
 | R-03 | Retrabalho por mudancas no fluxo de agendamento | Evitar momentaneamente | Mitigar por refinamento; aceitar replanejamento | Permite proteger o funcionamento do sistema principal e avaliar novo escopo para versao futura. |
 | R-04 | Ambiguidade nas novas regras de negocio | Mitigar | Evitar implementacao ate esclarecimento; aceitar risco residual em regras menores | Exige criterios de aceite e exemplos validados antes da implementacao. |
 | R-05 | Atraso por sobrecarga da equipe | Mitigar e evitar agravamento | Aceitar nova data formalmente; reduzir escopo | Exige negociacao de prazo e priorizacao para reduzir pressao sobre a equipe. |
@@ -27,12 +27,12 @@ Documento gerado para sugerir possiveis estrategias de resposta aos riscos previ
 | R-08 | Inconsistencia de dados entre sistema e prontuario | Mitigar e transferir | Aceitar com reconciliacao manual documentada | Exige logs, reconciliacao e alinhamento de responsabilidades com o sistema externo. |
 | R-09 | Notificacoes inconsistentes apos mudancas no agendamento | Aceitar ou mitigar levemente | Evitar mudancas sem mapear eventos | Impacto menor que os demais riscos; requer apenas validacao proporcional ao seu peso no aceite. |
 | R-10 | Vazamento ou exposicao indevida de dados sensiveis | Mitigar | Transferir parte por requisitos contratuais/fornecedor; evitar exposicao desnecessaria | Exige revisao de acesso, logs, criptografia, mascaramento e politicas de dados. |
-| R-11 | Indisponibilidade da API externa de prontuario | Transferir | Mitigar com contingencia; aceitar indisponibilidade residual via criterio de aceite | Exige SLA, cronograma de manutencao, canal de suporte e comportamento esperado em falhas. |
+| R-11 | Indisponibilidade da API externa de prontuario | Transferir | Mitigar com contingencia e resiliencia tecnica; aceitar indisponibilidade residual via criterio de aceite | Exige SLA, cronograma de manutencao, canal de suporte, comportamento esperado em falhas, circuit breaker, cache controlado, fila de reprocessamento e mensagens amigaveis ao usuario. |
 | R-12 | Concorrencia em agendamentos | Mitigar | Aceitar risco residual se baixo volume for validado | Exige controle transacional, bloqueio, idempotencia ou verificacao final de disponibilidade. |
 | R-13 | Falha de controle de acesso e perfis de usuario | Mitigar | Evitar liberar perfis sem validacao; aceitar apenas riscos residuais documentados | Exige matriz de permissoes e testes de autorizacao. |
-| R-14 | Falta de rastreabilidade para diagnosticar falhas | Mitigar | Aceitar lacunas temporarias com ciencia dos stakeholders | Exige logs, trilha de auditoria e correlacao sem expor dados sensiveis. |
+| R-14 | Falta de rastreabilidade para diagnosticar falhas | Mitigar | Aceitar lacunas temporarias com ciencia dos stakeholders | Exige logs, trilha de auditoria, metricas, alertas e correlacao sem expor dados sensiveis. |
 | R-15 | Crescimento nao controlado de escopo por novas solicitacoes | Evitar | Mitigar por processo de mudanca; aceitar apenas com replanejamento | Exige congelamento temporario, backlog futuro e decisao clara sobre escopo principal. |
-| R-16 | Falhas de compatibilidade entre regras locais e regras do prontuario externo | Transferir e mitigar | Aceitar risco residual com criterios de rejeicao documentados | Exige alinhamento de contrato/API, regras externas e cenarios de rejeicao. |
+| R-16 | Falhas de compatibilidade entre regras locais e regras do prontuario externo | Transferir e mitigar | Aceitar risco residual com criterios de rejeicao documentados | Exige alinhamento de contrato/API, regras externas, cenarios de rejeicao, validacao antecipada e mensagens compreensiveis quando uma regra externa bloquear a operacao. |
 | R-17 | Estresse da equipe e reducao da qualidade final | Mitigar e evitar agravamento | Aceitar nova data; reduzir escopo | Exige renegociacao de prazo, limite de trabalho em progresso e protecao da qualidade. |
 
 ## Respostas Propostas por Risco
@@ -44,7 +44,7 @@ Documento gerado para sugerir possiveis estrategias de resposta aos riscos previ
 **Justificativa:** Como a instabilidade esta associada a um sistema externo critico, parte relevante do risco pode ser transferida por meio de SLA, contrato, compromisso formal de suporte e exigencia de melhor documentacao. A equipe interna ainda pode mitigar tecnicamente, mas nao controla sozinha a qualidade, disponibilidade e mudancas do sistema externo.
 
 **Alternativas viaveis e implicacoes:**
-- **Mitigar:** criar tratamento de falhas, testes integrados e monitoramento. Reduz impacto, mas nao elimina dependencia externa.
+- **Mitigar:** criar tratamento de falhas, testes integrados, monitoramento e padroes de resiliencia. Reduz impacto, mas nao elimina dependencia externa.
 - **Aceitar:** seguir com instabilidade residual documentada. Exige aceite formal dos stakeholders.
 
 **Acoes praticas em ordem de execucao:**
@@ -52,8 +52,12 @@ Documento gerado para sugerir possiveis estrategias de resposta aos riscos previ
 2. Acionar responsaveis pelo sistema externo com base no SLA ou contrato existente.
 3. Solicitar melhoria da documentacao da API, exemplos de uso, regras de negocio e cenarios de erro.
 4. Solicitar cronograma de manutencoes, mudancas previstas e janelas de indisponibilidade.
-5. Definir canal formal de suporte e prazos de resposta para incidentes da integracao.
-6. Revalidar os fluxos integrados apos retorno do responsavel externo.
+5. Definir timeouts para evitar que o usuario fique aguardando indefinidamente.
+6. Implementar circuit breaker para suspender temporariamente chamadas a API externa quando houver falhas repetidas.
+7. Usar retry controlado com backoff para falhas transitorias, evitando sobrecarregar a API externa.
+8. Definir mensagens amigaveis e orientadas a acao para o usuario quando a integracao estiver indisponivel.
+9. Definir canal formal de suporte e prazos de resposta para incidentes da integracao.
+10. Revalidar os fluxos integrados apos retorno do responsavel externo.
 
 ### R-02 - Dependencia critica de sistema externo para a entrega
 
@@ -69,9 +73,11 @@ Documento gerado para sugerir possiveis estrategias de resposta aos riscos previ
 1. Identificar quais funcionalidades dependem obrigatoriamente do prontuario externo.
 2. Formalizar responsabilidades do sistema externo quanto a disponibilidade, suporte e comunicacao de mudancas.
 3. Definir criterios de aceite para cenarios em que o sistema externo esteja indisponivel ou instavel.
-4. Avaliar modo degradado, simulacao controlada para testes ou adiamento de escopo dependente.
-5. Submeter alternativas aos stakeholders para decisao.
-6. Atualizar planejamento e comunicacao do projeto conforme a decisao.
+4. Definir modo degradado para manter o sistema utilizavel quando a integracao externa falhar, quando isso for aceitavel para o negocio.
+5. Avaliar cache temporario ou leitura de dados previamente sincronizados, respeitando seguranca e consistencia.
+6. Avaliar simulacao controlada para testes ou adiamento de escopo dependente.
+7. Submeter alternativas aos stakeholders para decisao.
+8. Atualizar planejamento e comunicacao do projeto conforme a decisao.
 
 ### R-03 - Retrabalho por mudancas no fluxo de agendamento
 
@@ -179,8 +185,10 @@ Documento gerado para sugerir possiveis estrategias de resposta aos riscos previ
 2. Definir criterios de divergencia entre os sistemas.
 3. Implementar ou validar logs de integracao e correlacao de operacoes.
 4. Definir procedimento de reconciliacao para falhas.
-5. Alinhar com o responsavel externo o comportamento esperado da API.
-6. Validar com stakeholders se o tratamento e aceitavel para entrega.
+5. Avaliar fila de reprocessamento para operacoes que falharem por indisponibilidade temporaria.
+6. Indicar status claro ao usuario quando uma operacao estiver pendente de sincronizacao.
+7. Alinhar com o responsavel externo o comportamento esperado da API.
+8. Validar com stakeholders se o tratamento e aceitavel para entrega.
 
 ### R-09 - Notificacoes inconsistentes apos mudancas no agendamento
 
@@ -232,9 +240,14 @@ Documento gerado para sugerir possiveis estrategias de resposta aos riscos previ
 1. Confirmar SLA, disponibilidade esperada e responsabilidades do sistema externo.
 2. Solicitar cronograma de manutencoes e comunicacao previa de mudancas.
 3. Definir procedimento de incidente para indisponibilidade da API.
-4. Implementar tratamento controlado para indisponibilidade, se aplicavel.
-5. Testar comportamento do sistema quando a API externa falhar.
-6. Registrar criterios de aceite para indisponibilidade externa.
+4. Implementar circuit breaker para evitar repeticao de chamadas durante falhas persistentes.
+5. Configurar timeouts curtos e mensagens de retorno claras para evitar espera indefinida.
+6. Implementar retry com backoff apenas para falhas transitorias.
+7. Avaliar cache controlado para dados que possam ser exibidos temporariamente sem comprometer seguranca ou consistencia.
+8. Avaliar fila de reprocessamento para operacoes que possam ser concluidas depois.
+9. Exibir estado claro ao usuario, como "servico temporariamente indisponivel" ou "sincronizacao pendente", quando aplicavel.
+10. Testar comportamento do sistema quando a API externa falhar.
+11. Registrar criterios de aceite para indisponibilidade externa.
 
 ### R-12 - Concorrencia em agendamentos
 
@@ -284,9 +297,10 @@ Documento gerado para sugerir possiveis estrategias de resposta aos riscos previ
 1. Definir eventos minimos que precisam ser rastreados.
 2. Incluir identificadores de correlacao nas operacoes de integracao, se aplicavel.
 3. Registrar falhas de integracao sem expor dados sensiveis.
-4. Validar logs para agendamento, integracao e controle de acesso.
-5. Definir responsavel por consulta e analise dos registros.
-6. Revisar se a rastreabilidade atende aos cenarios criticos.
+4. Definir metricas e alertas para falhas repetidas, aumento de latencia e indisponibilidade da API externa.
+5. Validar logs para agendamento, integracao e controle de acesso.
+6. Definir responsavel por consulta e analise dos registros.
+7. Revisar se a rastreabilidade atende aos cenarios criticos.
 
 ### R-15 - Crescimento nao controlado de escopo por novas solicitacoes
 
@@ -319,9 +333,27 @@ Documento gerado para sugerir possiveis estrategias de resposta aos riscos previ
 1. Solicitar documentacao atualizada das regras e validacoes do prontuario.
 2. Mapear regras locais de agendamento que dependem do sistema externo.
 3. Identificar divergencias entre regras locais e regras externas.
-4. Ajustar validacoes locais ou mensagens de erro conforme contrato da API.
-5. Testar cenarios de rejeicao pelo prontuario.
-6. Registrar regras alinhadas como criterio de aceite.
+4. Antecipar validacoes no sistema local quando as regras externas forem conhecidas.
+5. Ajustar mensagens de erro para orientar o usuario quando a operacao for rejeitada pelo prontuario.
+6. Testar cenarios de rejeicao pelo prontuario.
+7. Registrar regras alinhadas como criterio de aceite.
+
+## Tecnicas de Resiliencia e Experiencia do Usuario
+
+As tecnicas abaixo podem reduzir o impacto de indisponibilidade, instabilidade ou lentidao do sistema externo. A aplicacao depende de validacao tecnica, requisitos de negocio e limites de consistencia de dados.
+
+| Tecnica | Onde se aplica | Beneficio esperado | Cuidados / validacoes |
+| --- | --- | --- | --- |
+| Circuit breaker | Chamadas para a API externa de prontuario | Evita chamadas repetidas para um servico instavel e permite resposta mais rapida ao usuario. | Definir criterios para abrir/fechar circuito e mensagem adequada durante indisponibilidade. |
+| Timeout controlado | Todas as chamadas externas criticas | Evita que o usuario fique aguardando indefinidamente. | Ajustar tempo limite conforme SLA, criticidade e experiencia esperada. |
+| Retry com backoff | Falhas temporarias de rede ou indisponibilidade momentanea | Aumenta chance de sucesso sem exigir nova acao do usuario. | Evitar repeticoes agressivas que sobrecarreguem a API externa. |
+| Fila de reprocessamento | Operacoes que podem ser concluidas depois | Permite registrar uma solicitacao e tentar sincronizar novamente mais tarde. | Validar se o negocio aceita operacoes pendentes e como isso sera exibido ao usuario. |
+| Modo degradado | Fluxos parcialmente dependentes do prontuario | Mantem partes do sistema utilizaveis mesmo com falha externa. | Definir claramente o que pode funcionar sem o prontuario e o que deve ser bloqueado. |
+| Cache controlado | Consultas de dados que podem ser reutilizados temporariamente | Reduz dependencia imediata da API externa e melhora tempo de resposta. | Validar validade dos dados, seguranca, privacidade e risco de informacao desatualizada. |
+| Mensagens amigaveis e acionaveis | Falhas, indisponibilidade e rejeicoes de regra | Reduz frustracao e orienta o usuario sobre o que fazer. | Evitar termos tecnicos e nao expor detalhes internos ou dados sensiveis. |
+| Status de sincronizacao | Operacoes pendentes com o prontuario | Aumenta transparencia quando uma acao ainda nao foi confirmada externamente. | Definir estados claros, como pendente, confirmado, falhou e requer acao. |
+| Idempotencia | Criacao, alteracao e cancelamento de agendamentos | Evita duplicidade quando uma mesma operacao for reenviada. | Definir chaves de idempotencia e comportamento esperado em repeticoes. |
+| Observabilidade e alertas | Integracao, agenda, seguranca e acesso | Permite identificar falhas antes que se tornem incidentes maiores. | Garantir logs suficientes sem registrar dados sensiveis em claro. |
 
 ### R-17 - Estresse da equipe e reducao da qualidade final
 
@@ -350,6 +382,8 @@ Documento gerado para sugerir possiveis estrategias de resposta aos riscos previ
 - [ ] Validar se a nova data final sera negociada para reduzir sobrecarga.
 - [ ] Confirmar aceite formal do gargalo de testes e seus riscos residuais.
 - [ ] Validar estrategia de testes automatizados para regressao.
+- [ ] Validar tecnicas de resiliencia para indisponibilidade da API externa, como circuit breaker, timeout, retry, cache, fila e modo degradado.
+- [ ] Validar melhorias de experiencia do usuario para mensagens de erro, status de sincronizacao e operacoes pendentes.
 - [ ] Confirmar responsaveis pelas acoes praticas escolhidas.
 - [ ] Registrar decisoes e alteracoes no change-log.
 
@@ -367,4 +401,5 @@ Use esta secao para registrar ajustes solicitados, decisoes tomadas e mudancas n
 | --- | --- | --- | --- | --- | --- | --- |
 | 1.0 | 2026-07-12 | Geracao inicial por IA | Criacao das estrategias de resposta aos riscos. | Atender a etapa de sugestao de respostas sem escolha definitiva. | IA | Concluido |
 | 1.1 | 2026-07-12 | Solicitacao do usuario | Ajuste das estrategias para riscos existentes e inclusao de respostas para R-10 a R-17. | Incorporar revisao humana sobre transferencia via SLA, controle de escopo, renegociacao de prazo, aceite do gargalo de testes, mitigacao por testes automatizados e respostas aos novos riscos. | IA | Concluido |
+| 1.2 | 2026-07-12 | Solicitacao do usuario | Inclusao de tecnicas avancadas de resiliencia e melhorias de experiencia do usuario. | Reduzir impacto de indisponibilidade do sistema externo e orientar respostas mais claras ao usuario final. | IA | Concluido |
 |  |  |  |  |  |  |  |

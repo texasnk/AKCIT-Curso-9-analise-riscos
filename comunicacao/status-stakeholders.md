@@ -4,7 +4,7 @@ Documento de comunicacao objetiva sobre a situacao atual do projeto, principais 
 
 **Timestamp de geracao:** 2026-07-12 20:08:51 -03:00
 
-**Ultima atualizacao:** 2026-07-12 21:32:23 -03:00
+**Ultima atualizacao:** 2026-07-12 21:39:48 -03:00
 
 ## Contexto Atual do Projeto
 
@@ -34,6 +34,8 @@ A integracao continua sendo o principal ponto de dependencia externa. A instabil
 **Impacto possivel:** atraso, bloqueio de funcionalidades dependentes, retrabalho, falhas em homologacao e necessidade de alinhamento com o responsavel pelo sistema externo.
 
 **Direcao recomendada:** transferir parte desse risco por meio de SLA, contrato ou acordo formal, exigindo melhor documentacao, cronograma de manutencao, comunicacao previa de mudancas, canal de suporte e regras claras da API.
+
+Tambem e recomendavel reduzir o impacto para o usuario final com mecanismos de resiliencia, como limite de tempo de resposta, interrupcao temporaria de chamadas para um servico instavel, novas tentativas controladas, fila de reprocessamento, cache controlado e mensagens claras quando o prontuario nao estiver disponivel.
 
 ### 2. Mudancas no fluxo de agendamento e controle de escopo
 
@@ -66,6 +68,8 @@ O sistema pode lidar com dados pessoais e dados relacionados a saude. Tambem ha 
 **Impacto possivel:** exposicao indevida de dados, dificuldade de suporte, perda de confianca, retrabalho e problemas no aceite da entrega.
 
 **Direcao recomendada:** validar controles de acesso, protecao de dados sensiveis, logs sem exposicao indevida, rastreabilidade de operacoes e mecanismos de reconciliacao com o prontuario.
+
+A experiencia do usuario tambem depende de transparencia nesses cenarios. Quando uma acao depender do prontuario externo, o sistema deve indicar se a operacao foi confirmada, esta pendente de sincronizacao, falhou ou precisa de nova tentativa.
 
 ### 6. Concorrencia em agendamentos
 
@@ -104,10 +108,27 @@ As notificacoes podem ser afetadas pelas mudancas no agendamento, mas o impacto 
    Confirmar perfis, permissoes, dados expostos em telas, logs, notificacoes e trafego com o sistema externo.
 
 7. **Definir tratamento para indisponibilidade e falhas de integracao.**
-   Avaliar mensagens controladas, reprocessamento, reconciliacao, logs e criterios de aceite para falhas externas.
+   Avaliar mensagens controladas, reprocessamento, reconciliacao, logs, criterios de aceite para falhas externas e tecnicas como circuit breaker, timeout, retry com intervalo progressivo, cache controlado e modo degradado.
 
 8. **Validar concorrencia no agendamento.**
    Confirmar como o sistema evita duplicidade ou conflito em reservas simultaneas.
+
+9. **Melhorar a experiencia do usuario em falhas ou pendencias.**
+   Definir mensagens simples, status de sincronizacao, orientacoes de proxima acao e comportamento esperado quando o prontuario externo nao responder.
+
+## Melhorias Recomendadas para Experiencia do Usuario
+
+As melhorias abaixo ajudam a reduzir impacto percebido pelo usuario quando houver instabilidade, indisponibilidade ou rejeicao de regras pelo sistema externo:
+
+- **Mensagens claras em falhas:** informar que o servico de prontuario esta temporariamente indisponivel, sem expor detalhes tecnicos.
+- **Status de sincronizacao:** indicar quando um agendamento esta confirmado, pendente de sincronizacao, falhou ou exige nova tentativa.
+- **Modo degradado:** permitir que partes do sistema continuem funcionando quando a integracao externa estiver indisponivel, desde que isso seja aceito pelo negocio.
+- **Evitar espera indefinida:** definir limite de tempo para respostas da integracao, retornando uma mensagem controlada ao usuario.
+- **Nova tentativa controlada:** repetir automaticamente algumas operacoes quando a falha parecer temporaria, sem duplicar agendamentos.
+- **Fila de reprocessamento:** registrar operacoes que podem ser sincronizadas depois, quando permitido pelas regras do projeto.
+- **Prevencao de duplicidade:** usar mecanismos que evitem repetir o mesmo agendamento quando o usuario tentar novamente apos uma falha.
+- **Validacao antecipada:** quando regras do prontuario forem conhecidas, validar antes de enviar a operacao para reduzir recusas tardias.
+- **Orientacao de proxima acao:** informar se o usuario deve aguardar, tentar novamente, revisar dados ou contatar suporte.
 
 ## Proximos Passos para Decisao
 
@@ -125,13 +146,16 @@ Os stakeholders precisam validar ou decidir os seguintes pontos:
 4. **Criterios de aceite da integracao.**
    Definir o que sera considerado aceitavel quando a API externa estiver instavel, indisponivel ou retornando regras divergentes.
 
-5. **Criterios de aceite das regras de agendamento.**
+5. **Comportamento esperado para falhas externas.**
+   Decidir quais tecnicas serao adotadas: circuit breaker, timeout, retry controlado, cache, fila de reprocessamento, modo degradado e mensagens ao usuario.
+
+6. **Criterios de aceite das regras de agendamento.**
    Aprovar regras, exemplos e excecoes antes de implementar mudancas adicionais.
 
-6. **Nivel minimo de testes.**
+7. **Nivel minimo de testes.**
    Confirmar a cobertura minima obrigatoria e aceitar formalmente as lacunas que nao puderem ser cobertas com a capacidade atual.
 
-7. **Nivel minimo de seguranca e rastreabilidade.**
+8. **Nivel minimo de seguranca e rastreabilidade.**
    Validar controles de acesso, tratamento de dados sensiveis, logs, auditoria e reconciliacao antes da entrega.
 
 ## Pontos que Exigem Validacao
@@ -144,10 +168,12 @@ Os stakeholders precisam validar ou decidir os seguintes pontos:
 - Se existem controles suficientes para dados sensiveis e perfis de usuario.
 - Se ha mecanismos de controle de concorrencia para evitar conflitos de agenda.
 - Se existem logs e rastreabilidade suficientes sem expor dados sensiveis.
+- Se o negocio aceita modo degradado, cache temporario ou fila de reprocessamento em falhas da API externa.
+- Quais mensagens e status devem ser exibidos ao usuario em indisponibilidade, sincronizacao pendente ou rejeicao de regra.
 - Quais lacunas de teste serao aceitas pelos stakeholders.
 
 ## Mensagem Final
 
 O projeto continua viavel, mas a situacao atual exige decisao clara sobre escopo, prazo, integracao externa, testes e qualidade. O maior risco nao esta em um unico ponto isolado, mas na combinacao entre dependencia externa critica, novas mudancas de escopo, capacidade limitada de validacao e sobrecarga da equipe.
 
-A recomendacao e proteger a entrega principal, formalizar responsabilidades do sistema externo, renegociar prazo quando necessario e aceitar conscientemente os riscos residuais. Essa abordagem ajuda a manter a qualidade, reduzir retrabalho e apoiar decisoes mais realistas e transparentes.
+A recomendacao e proteger a entrega principal, formalizar responsabilidades do sistema externo, renegociar prazo quando necessario e aceitar conscientemente os riscos residuais. Alem disso, mecanismos de resiliencia e mensagens claras podem reduzir o impacto percebido pelo usuario quando houver falhas externas. Essa abordagem ajuda a manter a qualidade, reduzir retrabalho e apoiar decisoes mais realistas e transparentes.
